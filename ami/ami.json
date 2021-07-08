@@ -1,21 +1,36 @@
 {
     "variables" : {
         "region" : "us-east-1",
-        "source_ami" : "ami-0d5eff06f840b45e9"
+        "aws_access_key_id": "{{ env `AWS_ACCESS_KEY_ID` }}",
+        "aws_secret_access_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
+        "source_ami" : "ami-0d5eff06f840b45e9" 
     },
     "builders" : [
         {
             "type" : "amazon-ebs",
             "profile" : "default",
             "region" : "{{user `region`}}",
+            "access_key": "{{ user `AWS_ACCESS_KEY_ID` }}",
+            "secret_key": "{{ user `AWS_SECRET_ACCESS_KEY` }}",
+            "vpc_id": "{{ user `vpc_id` }}",
+            "subnet_id": "{{ user `subnet_id` }}",
             "instance_type" : "t2.micro",
-            "source_ami" : "{{user `source_ami`}}",
+            "source_ami" : "{{ user `source_ami` }}",
             "ssh_username" : "ec2-user",
+            "ssh_timeout": "2m",
             "ami_name" : "custom-jenkins-ami",
             "ami_description" : "Amazon Linux Image with Jenkins Server",
             "run_tags" : {
                 "Name" : "packer-builder-docker"
             },
+            "ami_block_device_mappings": [
+              {
+                "delete_on_termination": true,
+                "device_name": "/dev/sda1",
+                "volume_size": 60,
+                "volume_type": "gp2"
+              }
+            ],
             "tags" : {
                 "Tool" : "Packer",
                 "Author" : "user",
