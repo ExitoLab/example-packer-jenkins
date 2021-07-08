@@ -1,13 +1,18 @@
 {
     "variables" : {
         "region" : "us-east-1",
-        "source_ami" : "ami-0d5eff06f840b45e9"
+        "source_ami" : "ami-0d5eff06f840b45e9",
+        "aws_access_key_id": "{{ env `AWS_ACCESS_KEY_ID` }}",
+        "aws_secret_access_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}"
+
     },
     "builders" : [
         {
             "type" : "amazon-ebs",
             "profile" : "default",
             "region" : "{{user `region`}}",
+            "access_key": "{{ user `AWS_ACCESS_KEY_ID` }}",
+            "secret_key": "{{ user `AWS_SECRET_ACCESS_KEY` }}",
             "instance_type" : "t2.micro",
             "source_ami" : "{{user `source_ami`}}",
             "ssh_username" : "ec2-user",
