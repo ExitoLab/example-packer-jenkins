@@ -1,0 +1,83 @@
+{
+    "variables" : {
+        "region" : "us-east-1",
+        "source_ami" : "ami-0d5eff06f840b45e9"
+    },
+    "builders" : [
+        {
+            "type" : "amazon-ebs",
+            "profile" : "default",
+            "region" : "{{user `region`}}",
+            "instance_type" : "t2.micro",
+            "source_ami" : "{{user `source_ami`}}",
+            "ssh_username" : "ec2-user",
+            "ami_name" : "custom-jenkins-ami",
+            "ami_description" : "Amazon Linux Image with Jenkins Server",
+            "run_tags" : {
+                "Name" : "packer-builder-docker"
+            },
+            "tags" : {
+                "Tool" : "Packer",
+                "Author" : "user",
+                "Environment" : "devops-demo"
+            }
+        }
+    ],
+    "provisioners" : [
+        {
+            "type" : "file",
+            "source" : "./basic-security.groovy",
+            "destination" : "/tmp/basic-security.groovy"
+        },
+        {
+            "type" : "file",
+            "source" : "./jenkins.install.UpgradeWizard.state",
+            "destination" : "/tmp/jenkins.install.UpgradeWizard.state"
+        },
+        {
+            "type" : "file",
+            "source" : "./jenkins",
+            "destination" : "/tmp/jenkins"
+        },
+        {
+            "type" : "file",
+            "source" : "./node-agent.groovy",
+            "destination" : "/tmp/node-agent.groovy"
+        },
+        {
+            "type" : "file",
+            "source" : "./plugins.txt",
+            "destination" : "/tmp/plugins.txt"
+        },
+        {
+            "type" : "file",
+            "source" : "./install-plugins.sh",
+            "destination" : "/tmp/install-plugins.sh"
+        },
+        {
+            "type" : "file",
+            "source" : "./dockerinstall.sh",
+            "destination" : "/tmp/dockerinstall.sh"
+        },
+        {
+            "type" : "file",
+            "source" : "./minikube.sh",
+            "destination" : "/tmp/minikube.sh"
+        },
+        {
+            "type" : "file",
+            "source" : "./nagios-install.sh",
+            "destination" : "/tmp/nagios-install.sh"
+        },
+        {
+            "type" : "file",
+            "source" : "./nrpe-install.sh",
+            "destination" : "/tmp/nrpe-install.sh"
+        },
+        {
+            "type" : "shell",
+            "script" : "./setup.sh",
+            "execute_command" : "sudo -E -S sh '{{ .Path }}'"
+        }
+    ]
+}
